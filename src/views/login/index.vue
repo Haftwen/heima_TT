@@ -93,6 +93,7 @@ export default {
         // 细分一下错误信息提高用户体验
         // 如果是用户手机号或者验证码输入错误让用户能知道
         // error.response.data 后端返回的数据 error.response.status后端返回的状态码
+        // 也可以用es11的可选链操作符 if（error.response？.status===400）
         if (error.response && error.response.status === 400) {
           this.$toast.fail(error.response.data.message)
           // 如果是程序员的错程序员能知道
