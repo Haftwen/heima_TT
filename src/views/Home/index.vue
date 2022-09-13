@@ -10,10 +10,26 @@
     <!-- active高亮tab的索引 -->
     <van-tabs v-model="active" swipeable>
       <van-tab v-for="item in channels" :key="item.id" :title="item.name">
+        <!-- 频道也是请求而来的传给list发请求用 -->
         <article-list :id="item.id"></article-list>
       </van-tab>
-      <span class="toutiao toutiao-gengduo"></span>
+      <span class="toutiao toutiao-gengduo" @click="isShow = true"></span>
     </van-tabs>
+    <van-popup
+      v-model="isShow"
+      position="bottom"
+      :style="{ height: '100%' }"
+      closeable
+      close-icon-position="top-left "
+    >
+      <!-- 频道传给编辑组件 -->
+      <!-- <channel-edit :my-channels="channels"></channel-edit> 为了风格一致短横线写法同样能渲染 -->
+      <!-- $event就是子组件传过来的参数值 -->
+      <channel-edit
+        :myChannels="channels"
+        @change-active=";[(isShow = false), (active = $event)]"
+      ></channel-edit>
+    </van-popup>
   </div>
 </template>
 
@@ -21,14 +37,18 @@
 // 引入文章详情组件
 import ArticleList from './components/ArticleList.vue'
 import { getChannelApi } from '@/api'
+// 引入弹出框的组件
+import ChannelEdit from './components/ChannelEdit.vue'
 export default {
   components: {
-    ArticleList
+    ArticleList,
+    ChannelEdit
   },
   data() {
     return {
       active: 0,
-      channels: []
+      channels: [],
+      isShow: false
     }
   },
   created() {
