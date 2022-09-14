@@ -38,6 +38,7 @@
           :key="item.id"
           :text="item.name"
           icon="plus"
+          @click="$emit('add-channel', item)"
         />
       </van-grid>
     </div>
@@ -74,7 +75,7 @@ export default {
     handleMyChannels(item, index) {
       // 如果是编辑状态下，并且不是推荐就删除频道
       if (this.isEdit && item.name !== '推荐') {
-        console.log('删除频道')
+        this.$emit('del-channels', item.id)
       } else {
         // 如果不是编辑状态我们点击之后就关闭弹窗并且跳转到对应的频道
         // 通知父组件根据index切换高亮，并且关闭弹窗

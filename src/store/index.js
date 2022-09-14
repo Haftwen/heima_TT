@@ -16,14 +16,16 @@ export default new Vuex.Store({
       key: 'toutiao',
       // storage:window.localStorage默认就是这个
       reducer(state) {
-        const { tokenObj } = state
-        return { tokenObj }
+        const { tokenObj, myChannels } = state
+        return { tokenObj, myChannels }
       }
     })
   ],
   state: {
-    tokenObj: {}
+    tokenObj: {},
     // a:1配置过reducer 就只会存储tokenObj并不会存储a了就
+    // 未登录状态的数组
+    myChannels: []
   },
   getters: {
     isLogin(state) {
@@ -34,6 +36,14 @@ export default new Vuex.Store({
   mutations: {
     SET_TOKEN(state, token) {
       state.tokenObj = token
+    },
+    /**
+     *
+     *我们修改过数据以后的最新数组channels
+     * @param {Array} channels
+     */
+    SET_MY_CHANNELS(state, channels) {
+      state.myChannels = channels
     }
   },
   actions: {},

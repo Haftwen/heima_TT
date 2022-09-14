@@ -26,8 +26,11 @@
       <!-- <channel-edit :my-channels="channels"></channel-edit> 为了风格一致短横线写法同样能渲染 -->
       <!-- $event就是子组件传过来的参数值 -->
       <channel-edit
+        v-if="isShow"
         :myChannels="channels"
         @change-active=";[(isShow = false), (active = $event)]"
+        @del-channels="delChannels"
+        @add-channel="addChannel"
       ></channel-edit>
     </van-popup>
   </div>
@@ -36,9 +39,11 @@
 <script>
 // 引入文章详情组件
 import ArticleList from './components/ArticleList.vue'
-import { getChannelApi } from '@/api'
+import { getChannelApi, delChannelApi, addChannelAPI } from '@/api'
 // 引入弹出框的组件
 import ChannelEdit from './components/ChannelEdit.vue'
+// 登陆状态 用于操作登录不登陆的两套系统
+import { mapGetters, mapMutations } from 'vuex'
 export default {
   components: {
     ArticleList,
@@ -52,12 +57,31 @@ export default {
     }
   },
   created() {
-    this.getChannel()
+    this.initChannels()
   },
   methods: {
+    // 将存储数据的方法抽过来
+    ...mapMutations(['SET_MY_CHANNELS']),
+    // 登录和未登陆的初始化 单独封装成一个方法 供created调用
+    initChannels() {
+      // 如果登录了 那就去发送请求获取用户的数据
+      if (this.isLogin) {
+        this.getChannel()
+      } else {
+        // 如果未登录 判断 本地是否有数据 如果有就用本地的 如果没有发送请求获取默认数据
+        // 不用方法读取 用属性读取
+        if (this.$store.state.myChannels.length === 0) {
+          // 本地无数据
+          this.getChannel()
+        } else {
+          this.channels = this.$store.state.myChannels
+        }
+      }
+    },
     async getChannel() {
       try {
         const { data } = await getChannelApi()
+        // 需要两套系统来操作登陆了操作线上 没登陆操作本地存储
         this.channels = data.data.channels
       } catch (error) {
         // 如果是js错误 axios507 提示用户刷新一下
@@ -69,7 +93,52 @@ export default {
           status === 507 && this.$toast.fail('请刷新')
         }
       }
+    },
+    // 删除频道根据id，都是分两步进行，第一步改变视图层，第二部发请求改变服务器数据
+    async delChannels(id) {
+      try {
+        const newChannels = this.channels.filter((item) => item.id !== id)
+        // 1.发送请求改变后端数据
+        if (this.isLogin) {
+          await delChannelApi(id)
+        } else {
+          this.SET_MY_CHANNELS(newChannels)
+        }
+        // 2.改变视图层
+        this.channels = newChannels
+        this.$toast.success('删除成功！！')
+      } catch (error) {
+        if (error.response && error.response.status === 401) {
+          this.$toast.fail('请登录以后删除')
+        } else {
+          throw error
+        }
+      }
+    },
+    // 添加频道到我的频道中 之所以上下同步变化是因为我们edit组件中的computed数据变化时在不断触发
+    // 都是分两步进行，第一步改变视图层，第二部发请求改变服务器数据
+    async addChannel(item) {
+      try {
+        // 1.发送请求添加频道
+        if (this.isLogin) {
+          await addChannelAPI(item.id, this.channels.length)
+        } else {
+          this.SET_MY_CHANNELS([...this.channels, item])
+        }
+        // 2.视图改变
+        this.channels.push(item)
+        this.$toast.success('添加成功')
+      } catch (error) {
+        if (error.response && error.response.status === 401) {
+          this.$toast.fail('请登录以后再添加')
+        } else {
+          throw error
+        }
+      }
     }
+  },
+  computed: {
+    ...mapGetters(['isLogin'])
   }
 }
 </script>
