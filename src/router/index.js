@@ -33,6 +33,10 @@ const routes = [
     path: '/login',
     // 避免首屏加载慢，采用路由懒加载
     component: () => import('views/login')
+  },
+  {
+    path: '/search',
+    component: () => import(/* webpackChunkName:"Search" */ '@/views/Search')
   }
 ]
 

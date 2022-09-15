@@ -1,6 +1,9 @@
 <template>
   <div>
-    <router-view></router-view>
+    <!-- 动画效果想让谁做动画包谁，mode指定先如后出还是先出后入 -->
+    <transition name="van-slide-up" mode="out-in">
+      <router-view></router-view>
+    </transition>
   </div>
 </template>
 <script>
