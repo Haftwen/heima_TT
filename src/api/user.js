@@ -33,3 +33,38 @@ export const getUserInfo = () => {
     // }
   })
 }
+/**
+ *
+ * @param {*} file 裁剪过后的图片的file对象
+ * @returns
+ */
+// 封装上传图片的接口 要求传表单必须传表单模拟一个表单
+export const uploadPhotoAPI = (file) => {
+  // 模拟表单
+  const fm = new FormData()
+  fm.append('photo', file)
+  return request({
+    url: '/v1_0/user/photo',
+    method: 'PATCH',
+    data: fm
+  })
+}
+// 页面加载获取信息
+export const getUserInfoAPI = () => {
+  return request({
+    url: '/v1_0/user/profile',
+    method: 'GET'
+  })
+}
+/**
+ *编辑用户的个人资料
+ * @param {String | Number} userInfo 传输过来的用户信息对象
+ * @returns promise
+ */
+export const UpdateUserInfoAPI = (userInfo) => {
+  return request({
+    url: '/v1_0/user/profile',
+    method: 'PATCH',
+    data: userInfo
+  })
+}
