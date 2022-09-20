@@ -27,7 +27,10 @@ export default new Vuex.Store({
     // 未登录状态的数组
     myChannels: [],
     // 搜索历史
-    histories: []
+    histories: [],
+    isShow: false,
+    // 评论id
+    comId: ''
   },
   getters: {
     isLogin(state) {
@@ -53,6 +56,14 @@ export default new Vuex.Store({
      */
     SET_HISTORIES(state, histories) {
       state.histories = histories
+    },
+    // 设置评论的评论的弹窗是显示还是隐藏
+    SET_REPLY(state, boole) {
+      state.isShow = boole
+    },
+    // 将文章评论id存储
+    SET_COMID(state, id) {
+      state.comId = id
     }
   },
   actions: {},

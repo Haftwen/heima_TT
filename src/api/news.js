@@ -15,3 +15,14 @@ export const getArticles = (id, timestamp) => {
     }
   })
 }
+/**
+ *
+ * @param {} id 点击的文章的具体id
+ * @returns
+ */
+// 获取新闻详情页
+export const getArticlesDetials = (id) => {
+  return request({
+    url: `/v1_0/articles/${id}`
+  })
+}

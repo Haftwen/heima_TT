@@ -5,6 +5,7 @@
       v-if="article.cover.type === 0"
       :title="article.title"
       :label="label"
+      @click="getDetails"
     />
     <!-- 一张图片 -->
     <van-cell
@@ -12,6 +13,7 @@
       :title="article.title"
       value="内容"
       :label="label"
+      @click="getDetails"
     >
       <van-image
         windth="60"
@@ -20,7 +22,7 @@
       ></van-image>
     </van-cell>
     <!-- 三张图片 -->
-    <van-cell v-else :title="article.title">
+    <van-cell v-else :title="article.title" @click="getDetails">
       <template #label>
         <van-image
           v-for="(item, index) in article.cover.images"
@@ -47,7 +49,17 @@ export default {
     label() {
       /*eslint-disable */
       const { aut_name, comm_count, pubdate } = this.article
-      return `${aut_name} ${comm_count} ${dayjs(pubdate).fromNow()}`
+      return `${aut_name} ${comm_count} 评论  ${dayjs(pubdate).fromNow()}`
+    }
+  },
+  methods: {
+    getDetails() {
+      this.$router.push({
+        path: '/detail',
+        query: {
+          id: this.article.art_id
+        }
+      })
     }
   }
 }

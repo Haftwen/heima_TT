@@ -9,7 +9,8 @@ module.exports = {
       // 如果是vant返回根节点大小37.5如果不是那就75 之所以这么设置是因为不调2倍图的情况下可以这样
       rootValue: ({ file }) => (/vant/.test(file) ? 37.5 : 75),
       // 所有的属性 都转成rem 宽高 padding... *全部
-      propList: ['*']
+      propList: ['*'],
+      exclude: 'github-markdown'
     })
   ]
 }

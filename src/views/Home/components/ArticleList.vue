@@ -56,7 +56,9 @@ export default {
       preTimeStamp: '',
       finished: false,
       error: false,
-      isLoading: false
+      isLoading: false,
+      // 文章id
+      articleId: ''
     }
   },
   created() {
